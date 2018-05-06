@@ -1,0 +1,12 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+body {
+  font-family: 'Open Sans', 'sans-serif';
+  background:#000000;
+  #background: url(https://pcbx.us/bfjb.jpg);
+}
+
+#thisCanvas {
+  border: solid 0.3em;
+  border-color: #fff;
+}
