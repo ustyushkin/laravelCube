@@ -30,23 +30,23 @@
             <li class="nav-item active dropdown">
               <!--a class="nav-link" href="#">Player: <span class="sr-only">(current)</span></a-->
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Player: Guest12343231
+                Player: {{$name}}
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <div style="margin:10px;">
-                <form class="form-inline">
-                  <input class="form-control" type="search" placeholder="Guest12343231" aria-label="Search" style="margin-bottom:10px;">
+                <form class="form-inline" id="changeName" action="/user/changename">
+                  <input class="form-control" type="search" placeholder="{{$name}}" aria-label="Search" style="margin-bottom:10px;" name="name">
                   <button class="btn btn-outline-success" type="submit" style="margin-bottom:10px;">Change</button>
                 </form>
 
                 <div class="dropdown-divider"></div>
-                <label>Last play: 03-02-1018</label>
+                <label>Last play: {{$lastDate}}</label>
                 </div>
               </div>
             </li>
 
             <li class="nav-item active">
-              <a class="nav-link" href="#" href="#">Level: 5<span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="#" href="#">Level: {{$level}}<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown">Map:</a>
@@ -74,9 +74,31 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!--script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script-->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="js/cube.js"></script>
+  <script>
+      $( "#changeName" ).submit(function( event ) {
+
+          // Stop form from submitting normally
+          event.preventDefault();
+
+          // Get some values from elements on the page:
+          var $form = $( this ),
+              term = $form.find( "input[name='name']" ).val(),
+              url = $form.attr( "action" );
+
+          // Send the data using post
+          var posting = $.post( url, { newName: term } );
+
+          // Put the results in a div
+          posting.done(function( data ) {
+              var content = $( data ).find( "#content" );
+              $( "#result" ).empty().append( content );
+          });
+      });
+  </script>
   </body>
 </html>

@@ -8,8 +8,11 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
 
-class UserModel
+class UserModel extends Model
 {
-
+    public $timestamps = false;
+    protected $connection = 'cube';
+    protected $table = 'users';
 }

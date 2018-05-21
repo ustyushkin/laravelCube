@@ -16,3 +16,4 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/','CubeController@index');
+Route::get('/test','CubeController@test');
