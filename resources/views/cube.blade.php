@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
@@ -80,6 +81,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="js/cube.js"></script>
   <script>
+      /*$.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });*/
       $( "#changeName" ).submit(function( event ) {
 
           // Stop form from submitting normally
@@ -91,12 +97,12 @@
               url = $form.attr( "action" );
 
           // Send the data using post
-          var posting = $.post( url, { newName: term } );
+          var posting = $.post( url, { newName: term, _token: "{{ csrf_token() }}" } );
 
           // Put the results in a div
           posting.done(function( data ) {
-              var content = $( data ).find( "#content" );
-              $( "#result" ).empty().append( content );
+              /*var content = $( data ).find( "#content" );
+              $( "#result" ).empty().append( content );*/
           });
       });
   </script>

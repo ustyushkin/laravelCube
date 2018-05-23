@@ -11,29 +11,39 @@ namespace App\Http;
 use Illuminate\Http\Request;
 use App\UserModel;
 
+/**
+ * Class User
+ * @package App\Http
+ */
 class User
 {
+
     private $name;
     private $level;
     private $lastDate;
-    private $id;
 
     /**
      * @param Request $request
      */
     public function __construct(Request $request)
     {
-        $this->name = ($request->cookie('name')) ?: $this->generateNewName();
+        $name = $request->cookie('name');
+        $lastDate = $request->cookie('lastDate');
+        $level = $request->cookie('level');
+
+        $this->name = $name ?: $this->generateNewName();
         //$this->name = $this->generateNewName();
-        $this->lastDate = ($request->cookie('lastDate')) ?: date('d-m-Y H:m');
-        $this->level = ($request->cookie('level')) ?: 1;
+        $this->lastDate = $lastDate ?: date('d-m-Y H:m');
+        $this->level = $level ?: 1;
+
         $this->storeUserInstance();
-        //$this->level = 1;
-        /*var_dump($this->name);
-        var_dump($this->level);
-        var_dump($this->lastDate);*/
+
+        $this->prepareResult();
     }
 
+    /**
+     * @return string
+     */
     public function generateNewName()
     {
         //$seed = str_split('abcdefghijklmnopqrstuvwxyz' . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' . '0123456789!@#$%^&*()');
@@ -41,7 +51,7 @@ class User
         shuffle($seed);
         $newName = '';
         foreach (array_rand($seed, 8) as $k) $newName .= $seed[$k];
-        return 'Player'.$newName;
+        return 'Player' . $newName;
     }
 
     public function getLastDate()
@@ -64,7 +74,10 @@ class User
      */
     public function setName($value)
     {
-        $this->name = $value;
+        if (!$this->isExists($value)) {
+            $this->name = $value;
+            $this->storeUserInstance();
+        }
     }
 
     public function getCurrentLevel()
@@ -77,17 +90,37 @@ class User
         $this->level = $value;
 
     }
+
+    public function isExists($name)
+    {
+        return (!is_null(UserModel::where('name', $name)->first()) ? true : false);
+    }
+
+    /**
+     * @return bool
+     */
     public function storeUserInstance()
     {
-        $user = UserModel::where('name',$this->name)->first();
-        if($user->count()==0)
-        {
+        $user = UserModel::where('name', $this->name)->first();
+        if (!$this->isExists($this->name)) {
             $user = new UserModel();
             $user->name = $this->getName();
         }
         $user->lastPlay = $this->getLastDate();
         $user->level = $this->getCurrentLevel();
         $user->save();
+        return true;
+    }
+
+    public function prepareResult()
+    {
+        $preparedResult = [];
+        $properties = get_class_vars(get_class($this));
+        $keys = array_keys($properties);
+        foreach ($keys as $key) {
+            $preparedResult[$key] = $this->$key;
+        }
+        return $preparedResult;
     }
 
 }

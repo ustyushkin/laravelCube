@@ -25,13 +25,30 @@ class CubeController extends Controller
         $userInstance = new User($request);
         /*$value = $request->cookie('level');
         var_dump($value);*/
-        $response = new Response(view('cube',['name'=>$userInstance->getName(),'lastDate'=>$userInstance->getLastDate(),'level'=>$userInstance->getCurrentLevel()]));
+
+        /*
+        $response = new Response(view('cube',[
+            'name'=>$userInstance->getName(),
+            'lastDate'=>$userInstance->getLastDate(),
+            'level'=>$userInstance->getCurrentLevel()
+        ]));
+        vs
+        $response = new Response(view('cube',$userInstance->prepareResult()));
+        */
+
+        $response = new Response(view('cube',$userInstance->prepareResult()));
 
         return $response->withCookie(cookie('name', $userInstance->getName(), 1000000000))
             ->withCookie(cookie('lastDate', $userInstance->getLastDate(), 60))
             ->withCookie(cookie('level',$userInstance->getCurrentLevel(),60));
     }
 
+    public function changeName(Request $request)
+    {
+        $userInstance = new User($request);
+        $userInstance->setName($request->input('newName'));
+        return response()->json(json_encode("{name:".$userInstance->getName()."}"))->withCookie(cookie('name', $userInstance->getName(), 1000000000));
+    }
     /**
      * @return bool
      */
