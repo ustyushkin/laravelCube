@@ -36,11 +36,19 @@ class CubeController extends Controller
         $response = new Response(view('cube',$userInstance->prepareResult()));
         */
 
-        $response = new Response(view('cube',$userInstance->prepareResult()));
+        $preparedResult = $userInstance->prepareResult();
+        $response = new Response(view('cube',$preparedResult));
 
-        return $response->withCookie(cookie('name', $userInstance->getName(), 1000000000))
+        foreach ($preparedResult as $key=>$value)
+        {
+            //var_dump($key.$value);
+            $response->withCookie(cookie($key, $value, 1000000000));
+        }
+
+        return $response;
+        /*return $response->withCookie(cookie('name', $userInstance->getName(), 1000000000))
             ->withCookie(cookie('lastDate', $userInstance->getLastDate(), 60))
-            ->withCookie(cookie('level',$userInstance->getCurrentLevel(),60));
+            ->withCookie(cookie('level',$userInstance->getCurrentLevel(),60));*/
     }
 
     public function changeName(Request $request)
@@ -54,42 +62,8 @@ class CubeController extends Controller
      */
     public function test(Request $request)
     {
-        /*$testFunction = function ($request) {
-            $testRequest = $request;
-            echo "in test function";
-            echo "<br>";
-            return "test";
-        };
-        $testFunction2 = function () {
-            echo "in test function";
-            echo "<br>";
-        };
 
-        echo $this->callAction("test3", array());
-        echo $this->test3();
-
-        echo $testFunction($request);
-
-        $this->middleware($testFunction);
-        $this->middleware($testFunction2);
-
-        $testMiddleware = $this->getMiddleware();
-        var_dump($testMiddleware);*/
-
-        /*$test = $request->input('*');
-        echo $test[0];*/
-
-        $test = $request->server();
-        foreach ($test as $key=>$value)
-        {
-            echo $key,"=",$value."<br>";
-        }
-
-        $test = $request->session();
-        foreach ($test as $key=>$value)
-        {
-            echo $key,"=",$value."<br>";
-        }
+        
         return "test";
     }
 
