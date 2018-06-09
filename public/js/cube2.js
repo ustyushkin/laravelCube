@@ -216,25 +216,47 @@ class level {
         this.exit=[];
 
         this.exit[0]=[3,3];
-        this.cubeRC[0] = [3, 3];
-        this.cubeRC[1] = [4, 4];
-        this.cubeRC[2] = [3, 3];
+        this.cubeRC[0] = [4, 4];
         this.positionPlayer[0] = [0, 0];
+        this.countBots[0] = 1;
+        this.positionBots[0] = [[0, 2], [2, 2]];
+        this.arrayLevel[0] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+
+
+        this.exit[1]=[3,2];
+        this.cubeRC[1] = [3, 4];
         this.positionPlayer[1] = [0, 0];
+        this.countBots[1] = 1;
+        this.positionBots[1] = [[0, 2], [2, 2]];
+        this.arrayLevel[1] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+
+        this.exit[2]=[3,3];
+        this.cubeRC[2] = [4, 4];
         this.positionPlayer[2] = [0, 0];
+        this.countBots[2] = 1;
+        this.positionBots[2] = [[0, 2], [2, 2]];
+        this.arrayLevel[2] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
 
-        this.countBots[0] = 2;
-        this.countBots[1] = 1;
-        this.countBots[1] = 1;
+        this.exit[3]=[3,3];
+        this.cubeRC[3] = [4, 4];
+        this.positionPlayer[3] = [0, 0];
+        this.countBots[3] = 1;
+        this.positionBots[3] = [[0, 2], [2, 2]];
+        this.arrayLevel[3] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
 
-        this.positionBots[0] = [[0, 2], [2, 0]];
-        this.positionBots[1] = [[2, 2]];
-        this.positionBots[2] = [[2, 2]];
+        this.exit[4]=[3,3];
+        this.cubeRC[4] = [4, 4];
+        this.positionPlayer[4] = [0, 0];
+        this.countBots[4] = 1;
+        this.positionBots[4] = [[0, 2], [2, 2]];
+        this.arrayLevel[4] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
 
-        this.arrayLevel[0] = [[2, 1], [1, 2]];
-        //this.arrayLevel[0] = [[10, 7], [5, 2], [1, 1], [0, 6], [13, 12], [11, 9], [7, 5], [3, 10], [2, 4], [14, 3], [15, 0], [9, 8], [12, 11], [8, 15], [4, 13], [6, 14]];
-        this.arrayLevel[1] = [[10, 7], [5, 2], [1, 1], [0, 6], [13, 12], [11, 9], [7, 5], [3, 10], [2, 4], [14, 3], [15, 0], [9, 8], [12, 11], [8, 15], [4, 13], [6, 14]];
-        this.arrayLevel[2] = [[10, 7], [5, 2], [1, 1], [0, 6], [13, 12], [11, 9], [7, 5], [3, 10], [2, 4], [14, 3], [15, 0], [9, 8], [12, 11], [8, 15], [4, 13], [6, 14]];
+        this.exit[5]=[3,3];
+        this.cubeRC[5] = [4, 4];
+        this.positionPlayer[5] = [0, 0];
+        this.countBots[5] = 1;
+        this.positionBots[5] = [[0, 2], [2, 2]];
+        this.arrayLevel[5] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
     }
 
     get getCurrentLevel() {
@@ -266,7 +288,7 @@ class level {
     }
     next() {
         this.current++;
-        if (this.current > 2) {
+        if (this.current > 5) {
             this.current = 0;
         }
         return this.current;
@@ -379,6 +401,7 @@ class bot {
 
 
         if (instQueue.getState == "human") {
+            console.log(instHuman.i + " " + instLevel.getExit[0]+ " " +instHuman.j + " " +instLevel.getExit[1]);
             if (((instHuman.i ) == (instLevel.getExit[0]))&&((instHuman.j ) == (instLevel.getExit[1]))) {
                 //instHuman.i = -1;
                 //instHuman.j = -1;
@@ -470,17 +493,27 @@ function botsTurns() {
 }
 
 function endLevel() {
-    alert('You WIN!!!');
+    //alert('You WIN!!!');
     instLevel.next();
     nextStage();
 }
 
 function endLevelLost() {
     //alert('You Lost!');
-    nextStage();
+    lostStage();
 }
 
 function nextStage(){
+    instScene.getInstance.removeAllChildren();
+    title = new createjs.Text("next level "+instLevel.getCurrentLevel, "10px Arial", "#ff7700");
+    title.x = 30;
+    title.y = 30;
+    title.textBaseline = "alphabetic";
+    instScene.getInstance.on("stagemousedown", newInit);
+    instScene.addObject(title)
+}
+
+function lostStage(){
     instScene.getInstance.removeAllChildren();
     title = new createjs.Text("level "+instLevel.getCurrentLevel+" lost", "10px Arial", "#ff7700");
     title.x = 30;
@@ -491,13 +524,10 @@ function nextStage(){
 }
 
 function newInit(evt){
-    instCubes = null;
-    instQueue = null;
-    instHuman = null;
-    bots = null;
 
     instScene.getInstance.removeAllChildren();
 
+    tweensComplete = 0;
     var circle = new createjs.Shape();
     circle.graphics.beginFill("Crimson").drawCircle(0, 0, 50);
     circle.name = 'asd';
@@ -518,36 +548,18 @@ function newInit(evt){
         bots[cb] = new bot("bot", instLevel.getPositionBots[cb][0], instLevel.getPositionBots[cb][1], instLevel, instScene, instQueue);
         //console.log(instLevel.getPositionBots[cb][0]);
     }
+    evt.remove();
 }
 
 function init() {
     //cube1 = new cube(2,2,30);
     instScene = new scene("thisCanvas");
-
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("Crimson").drawCircle(0, 0, 50);
-    circle.name = 'asd';
-    circle.x = 300;
-    circle.y = 100;
-    instScene.addObject(circle);
-
     instLevel = new level();
-    instCubes = new cubes(instLevel.getCubeRC[0], instLevel.getCubeRC[1], instScene.getInstance, 60);
-    instQueue = new queue();
-    //console.log(instQueue.getState);
-    //instQueue.next();
-    instHuman = new bot("human", instLevel.getPositionPlayer[0], instLevel.getPositionPlayer[1], instLevel, instScene, instQueue);
+    title = new createjs.Text("now lets start (click)", "10px Arial", "#ff7700");
+    title.x = 30;
+    title.y = 30;
+    title.textBaseline = "alphabetic";
+    instScene.getInstance.on("stagemousedown", newInit);
+    instScene.addObject(title)
 
-    //console.log(instLevel.getCountBots)
-    bots = [];
-    for (cb = 0; cb <= instLevel.getCountBots - 1; cb++) {
-        //bots.push(new bot('bot' + cb ,2,2));
-        bots[cb] = new bot("bot", instLevel.getPositionBots[cb][0], instLevel.getPositionBots[cb][1], instLevel, instScene, instQueue);
-        //console.log(instLevel.getPositionBots[cb][0]);
-    }
-
-    //instCubes.animate(instLevel, instQueue, instHuman, bots);
-    //console.log(instQueue.getState);
-
-    //scene1.addObject(cube1.parameters);
 }
