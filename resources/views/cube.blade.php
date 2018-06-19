@@ -64,7 +64,7 @@
     </nav>
 
     <main role="main" class="inner cover">
-      <canvas id="thisCanvas" width="320" height="350"></canvas>
+      <canvas id="thisCanvas" width="350" height="350"></canvas>
       <!--h1 class="cover-heading">Cover your page.</h1>
       <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
       <p class="lead">
