@@ -19,6 +19,31 @@ class scene {
     get getInstance() {
         return this.stage;
     }
+    transform(x,y){
+        console.log(x+" "+y);
+        let width = 350;
+        let height = 350;
+        let xTransform = (width-(x*(60-2.5)))/2;
+        let yTransform = (height-(y*(60-2.5)))/2;
+        this.stage.setTransform(yTransform,xTransform);
+    }
+    drawDecoration(level){
+        let cubeSize = 60;
+        for (let i=-4;i<10;i++)
+        {
+            var cubDecor = new createjs.Shape();
+            cubDecor.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Green").drawRect(0, 0, cubeSize - 10, cubeSize - 10);
+            cubDecor.x = i * cubeSize;
+            cubDecor.y = (-1) * cubeSize;
+            this.addObject(cubDecor);
+
+            var cubDecor = new createjs.Shape();
+            cubDecor.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Green").drawRect(0, 0, cubeSize - 10, cubeSize - 10);
+            cubDecor.x = i * cubeSize;
+            cubDecor.y = ((level.getCubeRC[0])) * cubeSize;
+            this.addObject(cubDecor);
+        }
+    }
 
 }
 
@@ -207,7 +232,7 @@ class queue {
 
 class level {
     constructor() {
-        this.current = 0;
+        this.current = 1;
         this.cubeRC = [];
         this.positionPlayer = [];
         this.arrayLevel = [];
@@ -215,12 +240,19 @@ class level {
         this.positionBots = [];
         this.exit=[];
 
-        this.exit[0]=[3,3];
+        /*this.exit[0]=[3,3];
         this.cubeRC[0] = [4, 4];
         this.positionPlayer[0] = [0, 0];
         this.countBots[0] = 1;
         this.positionBots[0] = [[0, 2], [2, 2]];
-        this.arrayLevel[0] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+        this.arrayLevel[0] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];*/
+
+        this.exit[0]=[2,2];
+        this.cubeRC[0] = [3, 3];
+        this.positionPlayer[0] = [0, 0];
+        this.countBots[0] = 1;
+        this.positionBots[0] = [[0, 2], [2, 2]];
+        this.arrayLevel[0] = [[0, 1], [1, 0]];
 
 
         this.exit[1]=[3,2];
@@ -527,6 +559,8 @@ function newInit(evt){
 
     instScene.getInstance.removeAllChildren();
 
+    instScene.transform(instLevel.getCubeRC[0], instLevel.getCubeRC[1]);
+    instScene.drawDecoration(instLevel);
     tweensComplete = 0;
     var circle = new createjs.Shape();
     circle.graphics.beginFill("Crimson").drawCircle(0, 0, 50);
