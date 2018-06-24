@@ -20,7 +20,7 @@ class scene {
         return this.stage;
     }
     transform(x,y){
-        console.log(x+" "+y);
+        //console.log(x+" "+y);
         let width = 350;
         let height = 350;
         let xTransform = (width-(x*(60-2.5)))/2;
@@ -68,7 +68,7 @@ class cube {
     }
 
     handleInteraction(event) {
-        console.log("iam = " + event.target.i + " " + event.target.j);
+        //console.log("iam = " + event.target.i + " " + event.target.j);
         //console.log(instQueue.getState);
         if (instHuman.animation.iammove == false) {
             if (instQueue.getState == "human") {
@@ -111,9 +111,9 @@ class cubes {
         if (queue.getState === "cubes") {
             var tempRoom = [];
             var temp = [];
-            for (var i = 0; i < level.getCubeRC[0]; i++) {
+            for (var i = 0; i < level.getCubeRC[1]; i++) {
                 temp[i] = [];
-                for (var j = 0; j < level.getCubeRC[1]; j++) {
+                for (var j = 0; j < level.getCubeRC[0]; j++) {
                     temp[i][j] = new Object();
                 }
             }
@@ -128,19 +128,20 @@ class cubes {
             let lengthArray = this.level.length - 1;
             for (var k = 0; k < this.level.length; k++) {
                 var a = this.level[k][0];
-                //console.log(a);
+                //console.log("a="+a);
                 var i = Math.trunc(a / (level.getCubeRC[0]));
-                //console.log(i);
+                //console.log("i="+i);
                 var j = (a - i * level.getCubeRC[0]);
-
+                //console.log("j="+j);
                 var b = this.level[k][1];
                 let numI = Math.trunc(b / (level.getCubeRC[0]));
                 let numJ = (b - numI * level.getCubeRC[0]);
                 let toX = numI * this.cubeSize;
                 let toY = numJ * this.cubeSize;
-                //console.log(toX + " " + toY);
+                /*console.log(toX + " " + toY);
                 //console.log(i+" "+j);
-
+                //console.log(" this.arr[i][j] "+this.arr[i][j]);
+                //console.log(numI+" "+numJ);*/
                 temp[numI][numJ] = this.arr[i][j];
                 this.arr[i][j].parameters.i = numI;
                 this.arr[i][j].parameters.j = numJ;
@@ -174,10 +175,14 @@ class cubes {
             }
             //need animation
             createjs.Tween.get(this.stage.getChildByName("asd"), {loop: false})
-                .to({x: 100}, 2000, createjs.Ease.getPowInOut(5))
+                .to({x: 600}, 2000, createjs.Ease.getPowInOut(5))
                 .call(function () {
+                    if (((instHuman.i ) == (instLevel.getExit[1]))&&((instHuman.j ) == (instLevel.getExit[0]))) {
+                        //instHuman.i = -1;
+                        //instHuman.j = -1;
+                        endLevel();
+                    }
                     queue.next();
-                    //console.log(queue.getState);
                 })
 
             for (var k = 0; k < this.level.length; k++) {
@@ -232,7 +237,8 @@ class queue {
 
 class level {
     constructor() {
-        this.current = 1;
+        this.current = parseInt(startLevel)-1;
+        //alert(this.current);
         this.cubeRC = [];
         this.positionPlayer = [];
         this.arrayLevel = [];
@@ -240,55 +246,97 @@ class level {
         this.positionBots = [];
         this.exit=[];
 
-        /*this.exit[0]=[3,3];
-        this.cubeRC[0] = [4, 4];
-        this.positionPlayer[0] = [0, 0];
-        this.countBots[0] = 1;
-        this.positionBots[0] = [[0, 2], [2, 2]];
-        this.arrayLevel[0] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];*/
-
         this.exit[0]=[2,2];
         this.cubeRC[0] = [3, 3];
         this.positionPlayer[0] = [0, 0];
         this.countBots[0] = 1;
         this.positionBots[0] = [[0, 2], [2, 2]];
-        this.arrayLevel[0] = [[0, 1], [1, 0]];
+        this.arrayLevel[0] = this.fillLevelArray(0);
 
-
-        this.exit[1]=[3,2];
+        this.exit[1]=[2,3];
         this.cubeRC[1] = [3, 4];
         this.positionPlayer[1] = [0, 0];
         this.countBots[1] = 1;
         this.positionBots[1] = [[0, 2], [2, 2]];
-        this.arrayLevel[1] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+        this.arrayLevel[1] = this.fillLevelArray(1);//
 
-        this.exit[2]=[3,3];
-        this.cubeRC[2] = [4, 4];
+        this.exit[2]=[3,2];
+        this.cubeRC[2] = [4, 3];
         this.positionPlayer[2] = [0, 0];
         this.countBots[2] = 1;
         this.positionBots[2] = [[0, 2], [2, 2]];
-        this.arrayLevel[2] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+        this.arrayLevel[2] = this.fillLevelArray(2);
 
-        this.exit[3]=[3,3];
-        this.cubeRC[3] = [4, 4];
+        this.exit[3]=[1,3];
+        this.cubeRC[3] = [2, 4];
         this.positionPlayer[3] = [0, 0];
         this.countBots[3] = 1;
-        this.positionBots[3] = [[0, 2], [2, 2]];
-        this.arrayLevel[3] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+        this.positionBots[3] = [[0, 1], [1, 1]];
+        this.arrayLevel[3] = this.fillLevelArray(3);
 
         this.exit[4]=[3,3];
         this.cubeRC[4] = [4, 4];
         this.positionPlayer[4] = [0, 0];
         this.countBots[4] = 1;
         this.positionBots[4] = [[0, 2], [2, 2]];
-        this.arrayLevel[4] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+        this.arrayLevel[4] = this.fillLevelArray(4);
 
         this.exit[5]=[3,3];
         this.cubeRC[5] = [4, 4];
         this.positionPlayer[5] = [0, 0];
         this.countBots[5] = 1;
         this.positionBots[5] = [[0, 2], [2, 2]];
-        this.arrayLevel[5] = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 0]];
+        this.arrayLevel[5] = this.fillLevelArray(5);
+
+        this.exit[6]=[2,2];
+        this.cubeRC[6] = [3, 3];
+        this.positionPlayer[6] = [0, 0];
+        this.countBots[6] = 2;
+        this.positionBots[6] = [[0, 2], [1, 2]];
+        this.arrayLevel[6] = this.fillLevelArray(6);
+
+
+        this.exit[7]=[2,3];
+        this.cubeRC[7] = [3, 4];
+        this.positionPlayer[7] = [0, 0];
+        this.countBots[7] = 2;
+        this.positionBots[7] = [[0, 2], [2, 2]];
+        this.arrayLevel[7] = this.fillLevelArray(7);//
+
+        this.exit[8]=[3,2];
+        this.cubeRC[8] = [4, 3];
+        this.positionPlayer[8] = [0, 0];
+        this.countBots[8] = 2;
+        this.positionBots[8] = [[0, 2], [2, 2]];
+        this.arrayLevel[8] = this.fillLevelArray(8);
+
+        this.exit[9]=[1,3];
+        this.cubeRC[9] = [2, 4];
+        this.positionPlayer[9] = [0, 0];
+        this.countBots[9] = 2;
+        this.positionBots[9] = [[3, 0], [3, 1]];
+        this.arrayLevel[9] = this.fillLevelArray(9);
+
+        this.exit[10]=[3,3];
+        this.cubeRC[10] = [4, 4];
+        this.positionPlayer[10] = [0, 0];
+        this.countBots[10] = 2;
+        this.positionBots[10] = [[0, 2], [2, 2]];
+        this.arrayLevel[10] = this.fillLevelArray(10);
+
+        this.exit[11]=[3,3];
+        this.cubeRC[11] = [4, 4];
+        this.positionPlayer[11] = [0, 0];
+        this.countBots[11] = 3;
+        this.positionBots[11] = [[0, 2], [2, 2], [1, 2]];
+        this.arrayLevel[11] = this.fillLevelArray(11);
+
+        this.exit[12]=[3,3];
+        this.cubeRC[12] = [4, 4];
+        this.positionPlayer[12] = [0, 0];
+        this.countBots[12] = 4;
+        this.positionBots[12] = [[0, 2], [2, 2], [1, 2], [2, 2]];
+        this.arrayLevel[12] = this.fillLevelArray(11);
     }
 
     get getCurrentLevel() {
@@ -320,10 +368,45 @@ class level {
     }
     next() {
         this.current++;
-        if (this.current > 5) {
+        if (this.current > 12) {
             this.current = 0;
         }
         return this.current;
+    }
+
+    fillLevelArray(level) {
+        var arrGrnrating = [];
+        var fa = [];
+        var sa = [];
+        var firstEl = null;
+        var secondEl = null;
+        var temp = [];
+        //alert(this.cubeRC[level][0] +" "+ this.cubeRC[level][1]);
+        var maxRoom = this.cubeRC[level][0] * this.cubeRC[level][1] - 1;
+        for (var i = 1; i <= (this.cubeRC[level][0] * this.cubeRC[level][1]); i++) {
+
+            firstEl = this.getRandomArbitary(0, maxRoom);
+            while (fa.indexOf(firstEl) != -1) {
+                firstEl = this.getRandomArbitary(0, maxRoom);
+            }
+            fa.push(firstEl);
+
+            secondEl = this.getRandomArbitary(0, maxRoom);
+            while (sa.indexOf(secondEl) != -1) {
+                secondEl = this.getRandomArbitary(0, maxRoom);
+            }
+            sa.push(secondEl);
+
+            temp = [firstEl, secondEl];
+            arrGrnrating.push(temp);
+
+        }
+        //console.log(arrGrnrating);
+        return arrGrnrating;
+    }
+
+    getRandomArbitary(min, max) {
+        return Math.round(Math.random() * (max - min) + min);
     }
 }
 
@@ -431,13 +514,28 @@ class bot {
     stopAnimation(event) {
         event.target.gotoAndStop("stand");
 
-
+        if (((instHuman.i ) == (instLevel.getExit[1]))&&((instHuman.j ) == (instLevel.getExit[0]))) {
+            //instHuman.i = -1;
+            //instHuman.j = -1;
+            endLevel();
+        }
         if (instQueue.getState == "human") {
-            console.log(instHuman.i + " " + instLevel.getExit[0]+ " " +instHuman.j + " " +instLevel.getExit[1]);
-            if (((instHuman.i ) == (instLevel.getExit[0]))&&((instHuman.j ) == (instLevel.getExit[1]))) {
+            //console.log(instHuman.i + " " + instLevel.getExit[0]+ " " +instHuman.j + " " +instLevel.getExit[1]);
+            if (((instHuman.i ) == (instLevel.getExit[1]))&&((instHuman.j ) == (instLevel.getExit[0]))) {
                 //instHuman.i = -1;
                 //instHuman.j = -1;
                 endLevel();
+            }
+            for (cb = 0; cb <= instLevel.getCountBots - 1; cb++) {
+                //if (bots[cb].animation.iammove==false){
+                if ((instHuman.i == bots[cb].i) && (instHuman.j == bots[cb].j)) {
+                    instHuman.i = -1;
+                    instHuman.j = -1;
+                    //console.log("this");
+                    endLevelLost();
+                    break;
+                }
+                //}
             }
             instHuman.animation.iammove = false;
             instQueue.next();
@@ -446,7 +544,7 @@ class bot {
         if (instQueue.getState == "bots") {
             tweensComplete++;
             let end = 0;
-            console.log(tweensComplete + " " + instLevel.getCountBots);
+            //console.log(tweensComplete + " " + instLevel.getCountBots);
             /*if (tweensComplete == instLevel.getCountBots) {
                 for (cb = 0; cb <= instLevel.getCountBots - 1; cb++) {
                     bots[cb].animation.iammove==false;
@@ -526,7 +624,10 @@ function botsTurns() {
 
 function endLevel() {
     //alert('You WIN!!!');
+
     instLevel.next();
+    changeLevel(instLevel.getCurrentLevel);
+    $( '#level' ).text( "Level " + instLevel.getCurrentLevel);
     nextStage();
 }
 
@@ -565,7 +666,7 @@ function newInit(evt){
     var circle = new createjs.Shape();
     circle.graphics.beginFill("Crimson").drawCircle(0, 0, 50);
     circle.name = 'asd';
-    circle.x = 300;
+    circle.x = 500;
     circle.y = 100;
     instScene.addObject(circle);
 

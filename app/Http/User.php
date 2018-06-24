@@ -18,7 +18,8 @@ use App\UserModel;
 class User
 {
 
-    private $name;
+    public $name;
+    public $newName;
     private $level;
     private $lastDate;
 
@@ -75,7 +76,7 @@ class User
     public function setName($value)
     {
         if (!$this->isExists($value)) {
-            $this->name = $value;
+            $this->newName = $value;
             $this->storeUserInstance();
         }
     }
@@ -88,6 +89,7 @@ class User
     public function setCurrentLevel($value)
     {
         $this->level = $value;
+        $this->storeUserInstance();
 
     }
 
@@ -105,6 +107,12 @@ class User
         if (!$this->isExists($this->name)) {
             $user = new UserModel();
             $user->name = $this->getName();
+
+        }
+        if ($this->newName<>'')
+        {
+            $user->name = $this->newName;
+            $this->name = $this->newName;
         }
         $user->lastPlay = $this->getLastDate();
         $user->level = $this->getCurrentLevel();

@@ -47,7 +47,7 @@
             </li>
 
             <li class="nav-item active">
-              <a class="nav-link" href="#" href="#">Level: {{$level}}<span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="#" href="#" id="level">Level: {{$level}}<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown">Map:</a>
@@ -86,6 +86,17 @@
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
       });*/
+
+      startLevel={{$level}};
+      var changeLevel = function(level) { /*alert(level);*/
+          var posting = $.post( '/user/changelevel', { level: level, _token: "{{ csrf_token() }}" } );
+
+          // Put the results in a div
+          posting.done(function( data ) {
+              //alert('level changed');
+              /*var content = $( data ).find( "#content" );
+              $( "#result" ).empty().append( content );*/
+          });};
       $( "#changeName" ).submit(function( event ) {
 
           // Stop form from submitting normally
@@ -101,6 +112,7 @@
 
           // Put the results in a div
           posting.done(function( data ) {
+              alert('name changed');
               /*var content = $( data ).find( "#content" );
               $( "#result" ).empty().append( content );*/
           });

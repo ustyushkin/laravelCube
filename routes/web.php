@@ -18,3 +18,4 @@ Route::get('/welcome', function () {
 Route::get('/','CubeController@index');
 Route::get('/test','CubeController@test');
 Route::post('/user/changename','CubeController@changeName');
+Route::post('/user/changelevel','CubeController@changeLevel');
