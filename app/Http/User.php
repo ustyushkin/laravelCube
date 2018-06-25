@@ -8,6 +8,7 @@
 
 namespace App\Http;
 
+use App\StatisticModel;
 use Illuminate\Http\Request;
 use App\UserModel;
 
@@ -131,4 +132,13 @@ class User
         return $preparedResult;
     }
 
+    public function saveStatistic(Request $request){
+        $stat = new StatisticModel();
+        $stat->user = $this->getName();
+        $stat->level = $request->input('level');
+        $stat->array = serialize($request->input('array'));
+        $stat->count = $request->input('count');
+        $stat->res = $request->input('res');
+        $stat->save();
+    }
 }

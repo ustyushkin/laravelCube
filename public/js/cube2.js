@@ -19,18 +19,53 @@ class scene {
     get getInstance() {
         return this.stage;
     }
-    transform(x,y){
+
+    transform(x, y) {
         //console.log(x+" "+y);
         let width = 350;
         let height = 350;
-        let xTransform = (width-(x*(60-2.5)))/2;
-        let yTransform = (height-(y*(60-2.5)))/2;
-        this.stage.setTransform(yTransform,xTransform);
+        let xTransform = (width - (x * (60 - 2.5))) / 2;
+        let yTransform = (height - (y * (60 - 2.5))) / 2;
+        this.stage.setTransform(yTransform, xTransform);
     }
-    drawDecoration(level){
+
+    drawDecoration(level) {
         let cubeSize = 60;
-        for (let i=-4;i<10;i++)
-        {
+        let point = cubeSize - 10;
+        var cubDecorTlo = new createjs.Shape();
+        cubDecorTlo.alpha = 0.5;
+        for (var i=1;i<150;i++){
+            let x = level.getRandomArbitary(-100,300);
+            let y = level.getRandomArbitary(-100,300)
+            let x2 = level.getRandomArbitary(20,30)
+            let y2 = level.getRandomArbitary(20,30)
+            cubDecorTlo.graphics.setStrokeStyle(0).beginStroke("#000000").beginFill("Green").drawRect(x, y, x2, x2);
+        }
+        this.addObject(cubDecorTlo);
+
+        var cubDecor = new createjs.Shape();
+        cubDecor.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Green").drawRect(-5*cubeSize, -5, (level.getPositionPlayer[0]+1)*cubeSize*5+10, (level.getPositionPlayer[1]+1)*cubeSize);
+        cubDecor.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Green").drawRect((level.getExit[1]+1)*cubeSize-1, (level.getExit[0])*cubeSize-5,cubeSize*5, cubeSize);
+        cubDecor.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Green").drawRect(-10, -10, level.getCubeRC[1]*cubeSize+10, level.getCubeRC[0]*cubeSize+10);
+
+        /*cubDecor.x = i * cubeSize;
+        cubDecor.y = (-1) * cubeSize;*/
+        this.addObject(cubDecor);
+
+        var title = new createjs.Text("Count of turn:", "14px Arial", "#ff7700");
+        title.x = -10;
+        title.y = -20;
+        title.textBaseline = "alphabetic";
+
+        var turn = new createjs.Text("0", "10px Arial", "#ff7700");
+        turn.x = 80;
+        turn.y = -20;
+        turn.name = "turn"
+        turn.textBaseline = "alphabetic";
+
+        this.addObject(title);
+        this.addObject(turn);
+        /*for (let i = -4; i < 10; i++) {
             var cubDecor = new createjs.Shape();
             cubDecor.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Green").drawRect(0, 0, cubeSize - 10, cubeSize - 10);
             cubDecor.x = i * cubeSize;
@@ -42,7 +77,15 @@ class scene {
             cubDecor.x = i * cubeSize;
             cubDecor.y = ((level.getCubeRC[0])) * cubeSize;
             this.addObject(cubDecor);
-        }
+        }*/
+    }
+    set setCount(value) {
+        let turn = this.stage.getChildByName('turn');
+        turn.text = value;
+    }
+    get getCount() {
+        let turn = this.stage.getChildByName('turn');
+        return turn.text;
     }
 
 }
@@ -50,7 +93,13 @@ class scene {
 class cube {
     constructor(i, j, cubeSize) {
         this.parameters = new createjs.Shape();
-        this.parameters.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Gray").drawRect(0, 0, cubeSize - 10, cubeSize - 10);
+        var rightPoint = cubeSize - 10;
+        this.parameters.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Gray").drawRect(-3, -3, rightPoint/2, rightPoint/2);
+        this.parameters.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Gray").drawRect(rightPoint/2 + 3, rightPoint/2 + 3, rightPoint/2, rightPoint/2);
+        this.parameters.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Gray").drawRect(-3, rightPoint/2 + 3, rightPoint/2, rightPoint/2);
+        this.parameters.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Gray").drawRect(rightPoint/2 + 3, -3, rightPoint/2, rightPoint/2);
+        this.parameters.graphics.setStrokeStyle(0).beginStroke("#00FF00").beginFill("Gray").drawRect(0, 0, rightPoint, rightPoint);
+
         this.parameters.x = i * cubeSize;
         this.parameters.y = j * cubeSize;
         this.parameters.i = i;
@@ -177,7 +226,7 @@ class cubes {
             createjs.Tween.get(this.stage.getChildByName("asd"), {loop: false})
                 .to({x: 600}, 2000, createjs.Ease.getPowInOut(5))
                 .call(function () {
-                    if (((instHuman.i ) == (instLevel.getExit[1]))&&((instHuman.j ) == (instLevel.getExit[0]))) {
+                    if (((instHuman.i) == (instLevel.getExit[1])) && ((instHuman.j) == (instLevel.getExit[0]))) {
                         //instHuman.i = -1;
                         //instHuman.j = -1;
                         endLevel();
@@ -205,7 +254,7 @@ class cubes {
                         bots[cb].room = b;
                         bots[cb].i = numI;
                         bots[cb].j = numJ;
-                        console.log(" res exti=" + bots[cb].i + " extj=" + bots[cb].j + " room=" + bots[cb].room);
+                        //console.log(" res exti=" + bots[cb].i + " extj=" + bots[cb].j + " room=" + bots[cb].room);
                     }
                 }
 
@@ -237,58 +286,59 @@ class queue {
 
 class level {
     constructor() {
-        this.current = parseInt(startLevel)-1;
+        this.current = parseInt(startLevel) - 1;
+        //this.current = 12;
         //alert(this.current);
         this.cubeRC = [];
         this.positionPlayer = [];
         this.arrayLevel = [];
         this.countBots = [];
         this.positionBots = [];
-        this.exit=[];
+        this.exit = [];
 
-        this.exit[0]=[2,2];
+        this.exit[0] = [2, 2];
         this.cubeRC[0] = [3, 3];
         this.positionPlayer[0] = [0, 0];
         this.countBots[0] = 1;
         this.positionBots[0] = [[0, 2], [2, 2]];
         this.arrayLevel[0] = this.fillLevelArray(0);
 
-        this.exit[1]=[2,3];
+        this.exit[1] = [2, 3];
         this.cubeRC[1] = [3, 4];
         this.positionPlayer[1] = [0, 0];
         this.countBots[1] = 1;
         this.positionBots[1] = [[0, 2], [2, 2]];
         this.arrayLevel[1] = this.fillLevelArray(1);//
 
-        this.exit[2]=[3,2];
+        this.exit[2] = [3, 2];
         this.cubeRC[2] = [4, 3];
         this.positionPlayer[2] = [0, 0];
         this.countBots[2] = 1;
         this.positionBots[2] = [[0, 2], [2, 2]];
         this.arrayLevel[2] = this.fillLevelArray(2);
 
-        this.exit[3]=[1,3];
+        this.exit[3] = [1, 3];
         this.cubeRC[3] = [2, 4];
         this.positionPlayer[3] = [0, 0];
         this.countBots[3] = 1;
         this.positionBots[3] = [[0, 1], [1, 1]];
         this.arrayLevel[3] = this.fillLevelArray(3);
 
-        this.exit[4]=[3,3];
+        this.exit[4] = [3, 3];
         this.cubeRC[4] = [4, 4];
         this.positionPlayer[4] = [0, 0];
         this.countBots[4] = 1;
         this.positionBots[4] = [[0, 2], [2, 2]];
         this.arrayLevel[4] = this.fillLevelArray(4);
 
-        this.exit[5]=[3,3];
+        this.exit[5] = [3, 3];
         this.cubeRC[5] = [4, 4];
         this.positionPlayer[5] = [0, 0];
         this.countBots[5] = 1;
         this.positionBots[5] = [[0, 2], [2, 2]];
         this.arrayLevel[5] = this.fillLevelArray(5);
 
-        this.exit[6]=[2,2];
+        this.exit[6] = [2, 2];
         this.cubeRC[6] = [3, 3];
         this.positionPlayer[6] = [0, 0];
         this.countBots[6] = 2;
@@ -296,47 +346,47 @@ class level {
         this.arrayLevel[6] = this.fillLevelArray(6);
 
 
-        this.exit[7]=[2,3];
+        this.exit[7] = [2, 3];
         this.cubeRC[7] = [3, 4];
         this.positionPlayer[7] = [0, 0];
         this.countBots[7] = 2;
         this.positionBots[7] = [[0, 2], [2, 2]];
         this.arrayLevel[7] = this.fillLevelArray(7);//
 
-        this.exit[8]=[3,2];
+        this.exit[8] = [3, 2];
         this.cubeRC[8] = [4, 3];
         this.positionPlayer[8] = [0, 0];
         this.countBots[8] = 2;
         this.positionBots[8] = [[0, 2], [2, 2]];
         this.arrayLevel[8] = this.fillLevelArray(8);
 
-        this.exit[9]=[1,3];
+        this.exit[9] = [1, 3];
         this.cubeRC[9] = [2, 4];
         this.positionPlayer[9] = [0, 0];
         this.countBots[9] = 2;
         this.positionBots[9] = [[3, 0], [3, 1]];
         this.arrayLevel[9] = this.fillLevelArray(9);
 
-        this.exit[10]=[3,3];
+        this.exit[10] = [3, 3];
         this.cubeRC[10] = [4, 4];
         this.positionPlayer[10] = [0, 0];
         this.countBots[10] = 2;
         this.positionBots[10] = [[0, 2], [2, 2]];
         this.arrayLevel[10] = this.fillLevelArray(10);
 
-        this.exit[11]=[3,3];
+        this.exit[11] = [3, 3];
         this.cubeRC[11] = [4, 4];
         this.positionPlayer[11] = [0, 0];
         this.countBots[11] = 3;
         this.positionBots[11] = [[0, 2], [2, 2], [1, 2]];
         this.arrayLevel[11] = this.fillLevelArray(11);
 
-        this.exit[12]=[3,3];
+        this.exit[12] = [3, 3];
         this.cubeRC[12] = [4, 4];
         this.positionPlayer[12] = [0, 0];
         this.countBots[12] = 4;
-        this.positionBots[12] = [[0, 2], [2, 2], [1, 2], [2, 2]];
-        this.arrayLevel[12] = this.fillLevelArray(11);
+        this.positionBots[12] = [[0, 3], [1, 3], [2, 3], [3, 3]];
+        this.arrayLevel[12] = this.fillLevelArray(12);
     }
 
     get getCurrentLevel() {
@@ -363,9 +413,10 @@ class level {
         return this.positionBots[this.current];
     }
 
-    get getExit(){
+    get getExit() {
         return this.exit[this.current];
     }
+
     next() {
         this.current++;
         if (this.current > 12) {
@@ -418,6 +469,7 @@ class bot {
         this.i = x;
         this.j = y;
         this.room = this.i + (this.j * level.getCubeRC[0]);
+        this.count = 0;
 
         this.data = {
             images: type == "human" ? ["human.png"] : ["bots.png"],
@@ -466,6 +518,10 @@ class bot {
         return this.animation;
     }
 
+    turnCount(){
+        this.count++;
+        instScene.setCount = this.count;
+    }
     right() {
         this.animation.iammove = true;
         this.animation.gotoAndPlay("left")
@@ -474,6 +530,7 @@ class bot {
             .to({x: this.animation.x + 60}, 1000, createjs.Ease.linear)
             .call(this.stopAnimation)
         this.i = this.i + 1;
+        this.turnCount();
         /*console.log("right = " + this.iammove);
         console.log("right exti=" + this.i + " extj=" + this.j);*/
     }
@@ -486,6 +543,7 @@ class bot {
             .to({x: this.animation.x - 60}, 1000, createjs.Ease.linear)
             .call(this.stopAnimation)
         this.i = this.i - 1;
+        this.turnCount();
         //console.log("left exti=" + this.i + " extj=" + this.j);
     }
 
@@ -497,6 +555,7 @@ class bot {
             .to({y: this.animation.y - 60}, 1000, createjs.Ease.linear)
             .call(this.stopAnimation)
         this.j = this.j - 1;
+        this.turnCount();
         //console.log("right exti=" + this.i + " extj=" + this.j);
     }
 
@@ -508,20 +567,21 @@ class bot {
             .to({y: this.animation.y + 60}, 1000, createjs.Ease.linear)
             .call(this.stopAnimation)
         this.j = this.j + 1;
+        this.turnCount();
         //console.log("left exti=" + this.i + " extj=" + this.j);
     }
 
     stopAnimation(event) {
         event.target.gotoAndStop("stand");
 
-        if (((instHuman.i ) == (instLevel.getExit[1]))&&((instHuman.j ) == (instLevel.getExit[0]))) {
+        if (((instHuman.i) == (instLevel.getExit[1])) && ((instHuman.j) == (instLevel.getExit[0]))) {
             //instHuman.i = -1;
             //instHuman.j = -1;
             endLevel();
         }
         if (instQueue.getState == "human") {
             //console.log(instHuman.i + " " + instLevel.getExit[0]+ " " +instHuman.j + " " +instLevel.getExit[1]);
-            if (((instHuman.i ) == (instLevel.getExit[1]))&&((instHuman.j ) == (instLevel.getExit[0]))) {
+            if (((instHuman.i) == (instLevel.getExit[1])) && ((instHuman.j) == (instLevel.getExit[0]))) {
                 //instHuman.i = -1;
                 //instHuman.j = -1;
                 endLevel();
@@ -551,25 +611,25 @@ class bot {
                 }
             }*/
 
-            if (tweensComplete == instLevel.getCountBots+1) {
+            if (tweensComplete == instLevel.getCountBots + 1) {
 
                 for (cb = 0; cb <= instLevel.getCountBots - 1; cb++) {
                     //if (bots[cb].animation.iammove==false){
-                        if ((instHuman.i == bots[cb].i) && (instHuman.j == bots[cb].j)) {
-                            instHuman.i = -1;
-                            instHuman.j = -1;
-                            console.log("this");
-                            end = 1;
-                            endLevelLost();
-                            break;
-                        }
+                    if ((instHuman.i == bots[cb].i) && (instHuman.j == bots[cb].j)) {
+                        instHuman.i = -1;
+                        instHuman.j = -1;
+                        console.log("this");
+                        end = 1;
+                        endLevelLost();
+                        break;
+                    }
                     //}
                 }
 
-                if (end==0){
-                instQueue.next();
-                tweensComplete = 0;
-                instCubes.animate(instLevel, instQueue, instHuman, bots);
+                if (end == 0) {
+                    instQueue.next();
+                    tweensComplete = 0;
+                    instCubes.animate(instLevel, instQueue, instHuman, bots);
                 }
             }
         }
@@ -624,39 +684,66 @@ function botsTurns() {
 
 function endLevel() {
     //alert('You WIN!!!');
-
+    saveStatistic(instLevel.getCurrentLevel,instLevel.getArrayLevel,instScene.getCount,"endLevel");
     instLevel.next();
     changeLevel(instLevel.getCurrentLevel);
-    $( '#level' ).text( "Level " + instLevel.getCurrentLevel);
+
+    $('#level').text("Level " + instLevel.getCurrentLevel);
     nextStage();
 }
 
 function endLevelLost() {
     //alert('You Lost!');
+    saveStatistic(instLevel.getCurrentLevel,instLevel.getArrayLevel,instScene.getCount,"lostLevel");
     lostStage();
 }
 
-function nextStage(){
+function nextStage() {
     instScene.getInstance.removeAllChildren();
-    title = new createjs.Text("next level "+instLevel.getCurrentLevel, "10px Arial", "#ff7700");
-    title.x = 30;
-    title.y = 30;
+    instScene.transform(0,0);
+    title = new createjs.Text("NEXT LEVEL " + instLevel.getCurrentLevel, "20px Arial", "#000000");
+    title.x = -140;
+    title.y = 150;
     title.textBaseline = "alphabetic";
+
+    var bitmap = new createjs.Bitmap("/next.jpg");
+    bitmap.regX=165;
+    bitmap.regY=165;
+    bitmap.scaleX = 1.1;
+    bitmap.scaleY = 1.1;
+    bitmap.image.onload = function() {
+        instScene.getInstance.update();
+    }
+    instScene.addObject(bitmap);
+
     instScene.getInstance.on("stagemousedown", newInit);
     instScene.addObject(title)
 }
 
-function lostStage(){
+function lostStage() {
     instScene.getInstance.removeAllChildren();
-    title = new createjs.Text("level "+instLevel.getCurrentLevel+" lost", "10px Arial", "#ff7700");
-    title.x = 30;
-    title.y = 30;
+    instScene.transform(0,0);
+    title = new createjs.Text("LEVEL " + instLevel.getCurrentLevel + " LOST", "20px Arial", "#ff0000");
+    title.x = -55;
+    title.y = -120;
     title.textBaseline = "alphabetic";
+
+
+    var bitmap = new createjs.Bitmap("/lost.jpg");
+    bitmap.regX=125;
+    bitmap.regY=125;
+    bitmap.scaleX = 1.42;
+    bitmap.scaleY = 1.42;
+    bitmap.image.onload = function() {
+        instScene.getInstance.update();
+    }
+    instScene.addObject(bitmap);
+
     instScene.getInstance.on("stagemousedown", newInit);
     instScene.addObject(title)
 }
 
-function newInit(evt){
+function newInit(evt) {
 
     instScene.getInstance.removeAllChildren();
 
@@ -690,11 +777,20 @@ function init() {
     //cube1 = new cube(2,2,30);
     instScene = new scene("thisCanvas");
     instLevel = new level();
-    title = new createjs.Text("now lets start (click)", "10px Arial", "#ff7700");
+
+    title = new createjs.Text("NOW LET START (CLICK)", "26px Arial", "#000000");
     title.x = 30;
     title.y = 30;
     title.textBaseline = "alphabetic";
+
+    var bitmap = new createjs.Bitmap("/start.jpg");
+    bitmap.regX=415;
+    bitmap.regY=100;
+    bitmap.image.onload = function() {
+        instScene.getInstance.update();
+    }
+    instScene.addObject(bitmap);
     instScene.getInstance.on("stagemousedown", newInit);
-    instScene.addObject(title)
+    instScene.addObject(title);
 
 }

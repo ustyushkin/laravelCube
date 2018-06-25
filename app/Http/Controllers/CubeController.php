@@ -74,11 +74,10 @@ class CubeController extends Controller
     /**
      * @return bool
      */
-    public function test(Request $request)
+    public function statistic(Request $request)
     {
-
-        
-        return "test";
+        $userInstance = new User($request);
+        $userInstance->saveStatistic($request);
     }
 
     /**

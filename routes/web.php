@@ -19,3 +19,4 @@ Route::get('/','CubeController@index');
 Route::get('/test','CubeController@test');
 Route::post('/user/changename','CubeController@changeName');
 Route::post('/user/changelevel','CubeController@changeLevel');
+Route::post('/user/statistic','CubeController@statistic');

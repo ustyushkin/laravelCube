@@ -117,6 +117,17 @@
               $( "#result" ).empty().append( content );*/
           });
       });
+      var saveStatistic = function(level,array,count,res) { /*alert(level);*/
+          //alert(level+" "+array+" "+count+" "+res);
+          var posting = $.post( '/user/statistic', { level: level, array:array,count:count,res:res, _token: "{{ csrf_token() }}" } );
+
+          // Put the results in a div
+          posting.done(function( data ) {
+              //alert('level changed');
+              /*var content = $( data ).find( "#content" );
+              $( "#result" ).empty().append( content );*/
+          });};
+
   </script>
   </body>
 </html>
